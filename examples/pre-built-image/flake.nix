@@ -1,5 +1,5 @@
 {
-  description = "nix-msb example: pass a pre-built OCI image into buildSandbox";
+  description = "nix-msb example: pass a pre-built OCI image (buildImage or buildLayeredImage) into buildSandbox";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
@@ -21,34 +21,67 @@
       };
 
       greet = pkgs.writeShellScriptBin "greet" ''
-        echo "[pre-built-image] image was built outside of buildSandbox"
+        echo "[pre-built-image] built with: $1"
         echo "[pre-built-image] uname: $(uname -a)"
       '';
 
-      image = pkgs.dockerTools.buildLayeredImage {
-        name = "pre-built-image";
-        tag = "latest";
-        contents = [
+      rootContents = pkgs.buildEnv {
+        name = "pre-built-image-root";
+        paths = [
           pkgs.busybox
           greet
         ];
+      };
+
+      layeredImage = pkgs.dockerTools.buildLayeredImage {
+        name = "pre-built-layered";
+        tag = "latest";
+        contents = [ rootContents ];
+        config.Cmd = [
+          "/bin/greet"
+          "buildLayeredImage"
+        ];
+      };
+
+      flatImage = pkgs.dockerTools.buildImage {
+        name = "pre-built-flat";
+        tag = "latest";
+        copyToRoot = rootContents;
+        config.Cmd = [
+          "/bin/greet"
+          "buildImage"
+        ];
+      };
+
+      layered = pkgs.microsandboxTools.buildSandbox {
+        name = "pre-built-layered";
+        image = layeredImage;
         config = {
-          Cmd = [ "/bin/greet" ];
+          cmd = [
+            "/bin/greet"
+            "buildLayeredImage"
+          ];
+          net = "none";
         };
       };
 
-      sandbox = pkgs.microsandboxTools.buildSandbox {
-        name = "pre-built-image";
-        inherit image;
+      flat = pkgs.microsandboxTools.buildSandbox {
+        name = "pre-built-flat";
+        image = flatImage;
         config = {
-          cmd = [ "/bin/greet" ];
+          cmd = [
+            "/bin/greet"
+            "buildImage"
+          ];
           net = "none";
         };
       };
     in
     {
-      packages.${system} = sandbox // {
-        default = sandbox.launch;
+      packages.${system} = {
+        layered = layered.launch;
+        flat = flat.launch;
+        default = layered.launch;
       };
     };
 }

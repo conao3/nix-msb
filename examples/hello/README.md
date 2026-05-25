@@ -5,7 +5,7 @@ Smallest possible example. Combines busybox with a shell script via `microsandbo
 ## Try it
 
 ```sh
-nix run github:conao3/nix-msb?dir=examples/hello
+nix run 'github:conao3/nix-msb?dir=examples/hello'
 ```
 
 Expected output:
@@ -22,10 +22,10 @@ The `6.12.68` kernel reported by `uname` is the one bundled with libkrun. It is 
 
 ```sh
 # OCI image tarball
-nix build github:conao3/nix-msb?dir=examples/hello#image
+nix build 'github:conao3/nix-msb?dir=examples/hello'#image
 
 # Extracted rootfs directory
-nix build github:conao3/nix-msb?dir=examples/hello#rootfs
+nix build 'github:conao3/nix-msb?dir=examples/hello'#rootfs
 ls ./result/bin/
 ```
 

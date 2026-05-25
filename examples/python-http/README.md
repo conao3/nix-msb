@@ -7,7 +7,7 @@ Runs `python -m http.server` inside microsandbox and forwards it to the host's `
 Terminal 1:
 
 ```sh
-nix run github:conao3/nix-msb?dir=examples/python-http
+nix run 'github:conao3/nix-msb?dir=examples/python-http'
 ```
 
 Python starts listening on port 8000 inside the microVM. The sandbox forwards host port 8888 to it.

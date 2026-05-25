@@ -65,10 +65,12 @@ Self-contained flakes under `examples/`. You can run them straight from GitHub w
 
 | Example | Command | What it shows |
 |---|---|---|
-| `hello` | `nix run github:conao3/nix-msb?dir=examples/hello` | Minimal busybox sandbox running a shell script (`net = "none"`) |
-| `python-http` | `nix run github:conao3/nix-msb?dir=examples/python-http` | `python -m http.server` published on host port 8888 (verify with `curl http://localhost:8888/` from another terminal) |
+| `hello` | `nix run 'github:conao3/nix-msb?dir=examples/hello'` | Minimal busybox sandbox running a shell script (`net = "none"`) |
+| `python-http` | `nix run 'github:conao3/nix-msb?dir=examples/python-http'` | `python -m http.server` published on host port 8888 (verify with `curl http://localhost:8888/` from another terminal) |
 
 See each example's `README.md` for details. Copy the `microsandboxTools.buildSandbox { ... }` call from any example and adapt the `contents` / `config` to bootstrap your own sandbox.
+
+> The flake URLs are quoted because zsh treats `?` as a glob character. Bash needs no quotes, but quoting works in either shell.
 
 ## Bundled packages
 

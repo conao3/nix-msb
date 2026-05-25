@@ -1,0 +1,48 @@
+{
+  "nodes": {
+    "nix-msb": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1779684930,
+        "narHash": "sha256-vql6l4kvKIMY9Sp35aOAoHmCATpXGP4brKLA4rz+ErU=",
+        "owner": "conao3",
+        "repo": "nix-msb",
+        "rev": "85ccaca520a53e0018116746c32cde68b9d03458",
+        "type": "github"
+      },
+      "original": {
+        "owner": "conao3",
+        "repo": "nix-msb",
+        "type": "github"
+      }
+    },
+    "nixpkgs": {
+      "locked": {
+        "lastModified": 1779508470,
+        "narHash": "sha256-Ap9KJX+5xHIn3bPIpfNgT6MEXdAECECwo4/rmlQD74M=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "29916453413845e54a65b8a1cf996842300cd299",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "ref": "nixos-unstable",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "root": {
+      "inputs": {
+        "nix-msb": "nix-msb",
+        "nixpkgs": "nixpkgs"
+      }
+    }
+  },
+  "root": "root",
+  "version": 7
+}

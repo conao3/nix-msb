@@ -7,11 +7,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1779679637,
-        "narHash": "sha256-cA9ZbbuYANhiGuFUlYkoq8wFQrF258RCpvXh+UyvWZU=",
+        "lastModified": 1779679678,
+        "narHash": "sha256-A77qo9+SocnPn3DkLXhvvSbdAd2yKpRqzhGVnpf3ftY=",
         "owner": "conao3",
         "repo": "nix-msb",
-        "rev": "630d9706e0bfcb04c1549d825dc450b8596999b8",
+        "rev": "7a2a893a4d20a53a5422af72517121f5ec85524e",
         "type": "github"
       },
       "original": {

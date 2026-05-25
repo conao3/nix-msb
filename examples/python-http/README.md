@@ -12,6 +12,8 @@ nix run 'github:conao3/nix-msb?dir=examples/python-http'
 
 Python starts listening on port 8000 inside the microVM. The sandbox forwards host port 8888 to it.
 
+> Python prints `Serving HTTP on 0.0.0.0 port 8000` — that is the **guest** port. From the host, hit **8888** instead.
+
 Terminal 2:
 
 ```sh

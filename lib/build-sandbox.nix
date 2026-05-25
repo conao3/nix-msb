@@ -9,7 +9,8 @@
 
 {
   name,
-  contents ? [ ],
+  contents ? null,
+  image ? null,
   config ? { },
 }:
 
@@ -25,11 +26,19 @@ let
   // lib.optionalAttrs (config ? user) { User = config.user; }
   // lib.optionalAttrs (config ? workdir) { WorkingDir = config.workdir; };
 
-  image = dockerTools.buildLayeredImage {
-    inherit name contents;
-    tag = "latest";
-    config = imageConfig;
-  };
+  effectiveImage =
+    if image != null && contents != null then
+      throw "microsandboxTools.buildSandbox: pass either `image` or `contents`, not both"
+    else if image != null then
+      image
+    else if contents != null then
+      dockerTools.buildLayeredImage {
+        inherit name contents;
+        tag = "latest";
+        config = imageConfig;
+      }
+    else
+      throw "microsandboxTools.buildSandbox: must pass either `image` or `contents`";
 
   rootfs =
     runCommand "${name}-rootfs"
@@ -39,7 +48,7 @@ let
       ''
         mkdir -p $out
         work=$(mktemp -d)
-        tar -xzf ${image} -C "$work"
+        tar -xzf ${effectiveImage} -C "$work"
         for layer in $(jq -r '.[0].Layers[]' "$work/manifest.json"); do
           tar -xf "$work/$layer" -C $out
         done
@@ -125,8 +134,8 @@ in
 {
   inherit
     rootfs
-    image
     launch
     sandboxfile
     ;
+  image = effectiveImage;
 }

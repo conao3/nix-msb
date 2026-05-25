@@ -4,14 +4,21 @@ A thin Nix library and launch wrapper for running closures inside [microsandbox]
 
 ## What it provides
 
-Calling `microsandboxTools.buildSandbox { name; contents; config }` returns an attrset:
+Calling `microsandboxTools.buildSandbox { name; contents | image; config }` returns an attrset:
 
 | attr | content |
 |---|---|
 | `rootfs` | Read-only rootfs derivation. Image layers are extracted and a minimal `/etc` (`passwd`, `group`, `os-release`) is stubbed in |
-| `image` | OCI image tarball (for pushing to a registry) |
+| `image` | OCI image tarball (either the one you passed in, or one built internally from `contents`) |
 | `launch` | App derivation that copies `rootfs` into a writable tmpdir, runs `msb run`, and cleans up on exit |
 | `sandboxfile` | `Sandboxfile`-string derivation (currently a stub) |
+
+You build the image one of two ways. They are mutually exclusive:
+
+- **`contents = [ ... ];`** — `buildSandbox` calls `dockerTools.buildLayeredImage` internally with your `contents` and `config`.
+- **`image = <derivation>;`** — pass an OCI image you already built (e.g. with `pkgs.dockerTools.buildImage` or `pkgs.dockerTools.buildLayeredImage`). See `examples/pre-built-image` for the full shape.
+
+Passing both, or neither, raises a `throw` at evaluation time.
 
 Recognised keys in `config`:
 
@@ -67,6 +74,7 @@ Self-contained flakes under `examples/`. You can run them straight from GitHub w
 |---|---|---|
 | `hello` | `nix run 'github:conao3/nix-msb?dir=examples/hello'` | Minimal busybox sandbox running a shell script (`net = "none"`) |
 | `python-http` | `nix run 'github:conao3/nix-msb?dir=examples/python-http'` | `python -m http.server` published on host port 8888 (verify with `curl http://localhost:8888/` from another terminal) |
+| `pre-built-image` | `nix run 'github:conao3/nix-msb?dir=examples/pre-built-image'` | Build an OCI image with `dockerTools` outside of `buildSandbox` and pass it in via the `image` argument |
 
 See each example's `README.md` for details. Copy the `microsandboxTools.buildSandbox { ... }` call from any example and adapt the `contents` / `config` to bootstrap your own sandbox.
 

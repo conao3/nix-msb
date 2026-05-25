@@ -59,16 +59,27 @@ nix run .
 # → Linux msb-xxxxxxxx 6.12.68 #1 SMP ... x86_64 GNU/Linux
 ```
 
+## Examples
+
+`examples/` 配下に独立 flake のサンプルを置いている。git clone せずに直接試せる:
+
+| サンプル | コマンド | 内容 |
+|---|---|---|
+| `hello` | `nix run github:conao3/nix-msb?dir=examples/hello` | busybox + 自前 shell script の最小例 |
+| `python-http` | `nix run github:conao3/nix-msb?dir=examples/python-http` | `python -m http.server` を 8888 番で公開 (別 terminal で `curl http://localhost:8888/`) |
+
+詳細は各 example の `README.md` を参照。`flake.nix` の `microsandboxTools.buildSandbox { ... }` をコピペして書き換えれば任意の sandbox の雛形になる。
+
 ## 同梱されるもの
 
-- `pkgs.microsandbox` — `msb` CLI の packaging (Linux x86_64 + aarch64)。[NixOS/nixpkgs#523829](https://github.com/NixOS/nixpkgs/pull/523829) が merge されたら upstream に切り替える予定の暫定コピー
-- `pkgs.microsandboxTools.buildSandbox` — 本体
+- `pkgs.microsandbox` — `msb` CLI の packaging (Linux x86_64 + aarch64)。[NixOS/nixpkgs#523829](https://github.com/NixOS/nixpkgs/pull/523829) が merge されるまでの暫定同梱で、merge 後は upstream の `pkgs.microsandbox` に依存を切り替える
+- `pkgs.microsandboxTools.buildSandbox` — 本体 library
 
 ## 動作前提
 
-- Linux + KVM
+- Linux + KVM (`/dev/kvm` にアクセスできるユーザー)
 - nixpkgs `nixos-unstable` (glibc 2.39 以上)
 
 ## ライセンス
 
-Apache-2.0
+[Apache-2.0](./LICENSE)

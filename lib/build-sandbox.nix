@@ -50,7 +50,12 @@ let
         work=$(mktemp -d)
         tar -xzf ${effectiveImage} -C "$work"
         for layer in $(jq -r '.[0].Layers[]' "$work/manifest.json"); do
-          tar -xf "$work/$layer" -C $out
+          # Pre-create every directory entry so they exist with umask
+          # permissions (0755). Some image producers (notably
+          # dockerTools.buildImage) ship directories with mode 0555,
+          # which would block tar from writing files into them.
+          tar -tf "$work/$layer" | awk '/\/$/' | (cd $out && xargs -r -I{} mkdir -p -- "{}")
+          tar -xf "$work/$layer" --no-overwrite-dir -C $out
         done
 
         mkdir -p $out/etc

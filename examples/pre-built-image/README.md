@@ -2,6 +2,8 @@
 
 Build an OCI image *outside* of `buildSandbox` and pass it in via the `image` argument. Use this shape when you already have a `dockerTools.buildImage` / `dockerTools.buildLayeredImage` derivation lying around and just want microsandbox to run it.
 
+Both `dockerTools.buildImage` (single-layer, flat) and `dockerTools.buildLayeredImage` (auto-layered) outputs are accepted; the rootfs extraction handles the directory-mode differences between the two layouts transparently.
+
 ## Try it
 
 ```sh

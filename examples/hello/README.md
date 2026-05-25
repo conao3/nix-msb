@@ -1,14 +1,14 @@
 # hello
 
-最小サンプル。busybox + 自前の `hello` シェルスクリプトを `microsandboxTools.buildSandbox` で組んで microsandbox で起動する。
+Smallest possible example. Combines busybox with a shell script via `microsandboxTools.buildSandbox` and launches it under microsandbox.
 
-## 試し方
+## Try it
 
 ```sh
 nix run github:conao3/nix-msb?dir=examples/hello
 ```
 
-期待出力:
+Expected output:
 
 ```
 [hello] Hello from a Nix-built microsandbox
@@ -16,20 +16,20 @@ nix run github:conao3/nix-msb?dir=examples/hello
 [hello] whoami: root
 ```
 
-`uname` の kernel `6.12.68` は libkrun 同梱のゲストカーネルで、ホストの kernel とは別物。これが出力されれば microVM 隔離が成立している。
+The `6.12.68` kernel reported by `uname` is the one bundled with libkrun. It is different from the host kernel, which means the microVM boundary is in effect.
 
-## 中身を覗く
+## Inspect the artifacts
 
 ```sh
-# OCI image (tarball) を取り出す
+# OCI image tarball
 nix build github:conao3/nix-msb?dir=examples/hello#image
 
-# rootfs (展開済みディレクトリ) を取り出す
+# Extracted rootfs directory
 nix build github:conao3/nix-msb?dir=examples/hello#rootfs
 ls ./result/bin/
 ```
 
-## ローカルで編集する
+## Hack on it locally
 
 ```sh
 git clone https://github.com/conao3/nix-msb
@@ -37,4 +37,4 @@ cd nix-msb/examples/hello
 nix run .
 ```
 
-`flake.nix` を編集すれば `contents` や `config.cmd` を差し替えて挙動を確かめられる。
+Edit `flake.nix` and tweak `contents` or `config.cmd` to experiment.

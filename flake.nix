@@ -1,7 +1,7 @@
 {
   description = "Nix tooling for running OCI images inside microsandbox microVMs";
 
-  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
 
   outputs =
     { self, nixpkgs }:

@@ -19,28 +19,34 @@ let
   # so the user can omit config.cmd unless they want to override.
   imageCmd =
     if image != null then
-      runCommand "${name}-image-cmd" {
-        nativeBuildInputs = [ jq ];
-        inherit image;
-      } ''
-        tmp=$(mktemp -d)
-        tar -xzf "$image" -C "$tmp"
-        cfg=$(jq -r '.[0].Config' "$tmp/manifest.json")
-        jq -r '.config.Cmd // empty | @json' "$tmp/$cfg" > $out
-      ''
+      runCommand "${name}-image-cmd"
+        {
+          nativeBuildInputs = [ jq ];
+          inherit image;
+        }
+        ''
+          tmp=$(mktemp -d)
+          tar -xzf "$image" -C "$tmp"
+          cfg=$(jq -r '.[0].Config' "$tmp/manifest.json")
+          jq -r '.config.Cmd // empty | @json' "$tmp/$cfg" > $out
+        ''
     else
       null;
 
   # config.cmd always wins when explicitly set.
   # Otherwise, use the image's Cmd (if available), or fall back to /bin/sh.
   cmd =
-    if config ? cmd then config.cmd
-    else if imageCmd != null then (
-      let raw = builtins.readFile imageCmd; in
-      if raw == "" then [ "/bin/sh" ]
-      else builtins.fromJSON raw
-    )
-    else [ "/bin/sh" ];
+    if config ? cmd then
+      config.cmd
+    else if imageCmd != null then
+      (
+        let
+          raw = builtins.readFile imageCmd;
+        in
+        if raw == "" then [ "/bin/sh" ] else builtins.fromJSON raw
+      )
+    else
+      [ "/bin/sh" ];
 
   imageConfig = {
     Cmd = cmd;
